@@ -1,9 +1,9 @@
-name: Build Pardus AppImage
+name: Build Pardus Linux App
 
 on:
   push:
-    branches: [ main ]  # main dalına kod push ettiğinde çalışır
-  workflow_dispatch:     # GitHub üzerinden butona basarak elle başlatmanı sağlar
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,12 +23,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      - name: AppImage Derle
+      - name: Linux Uygulamasını Derle
         run: |
-          flet build appimage
+          flet build linux
 
       - name: Derlenen Dosyayı İndirilebilir Yap
         uses: actions/upload-artifact@v4
         with:
-          name: Pardus-AppImage
+          name: Pardus-Linux-App
           path: build/linux/
