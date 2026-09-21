@@ -13,7 +13,7 @@ jobs:
       - name: Proje Kodlarını Çek
         uses: actions/checkout@v4
 
-      - name: Python Ortamını Kur
+      - name: Python Ortamını Sabitle (3.11)
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -34,7 +34,7 @@ jobs:
 
       - name: AppImage Paketi Oluştur
         run: |
-          # appimagetool aracını indir
+          # appimagetool indir ve çalıştırılabilir yap
           wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           ./appimagetool-x86_64.AppImage --appimage-extract
