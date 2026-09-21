@@ -34,8 +34,8 @@ jobs:
 
       - name: AppImage Paketi Oluştur
         run: |
-          # appimagetool indir ve çalıştırılabilir yap
-          wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+          # Güncel appimagetool aracını indir
+          wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           ./appimagetool-x86_64.AppImage --appimage-extract
 
