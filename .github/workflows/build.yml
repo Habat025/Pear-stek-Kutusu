@@ -25,7 +25,7 @@ jobs:
 
       - name: Linux Uygulamasını Derle
         run: |
-          flet build linux
+          flet build linux --yes
 
       - name: Derlenen Dosyayı İndirilebilir Yap
         uses: actions/upload-artifact@v4
