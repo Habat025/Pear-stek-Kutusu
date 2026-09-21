@@ -1,4 +1,4 @@
-name: Build Pardus Linux App
+name: Build Pardus AppImage
 
 on:
   push:
@@ -18,22 +18,57 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Linux Sistem Bağımlılıklarını Yükle
+      - name: Linux Bağımlılıklarını Yükle
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev wget file squashfs-tools imagemagick
 
       - name: Flet Kütüphanesini Yükle
         run: |
           python -m pip install --upgrade pip
           pip install flet
 
-      - name: Linux Uygulamasını Derle
+      - name: Linux Derlemesi Yap
         run: |
           flet build linux --yes
 
-      - name: Derlenen Dosyayı İndirilebilir Yap
+      - name: AppImage Paketi Oluştur
+        run: |
+          # appimagetool aracını indir
+          wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ./appimagetool-x86_64.AppImage --appimage-extract
+
+          # AppDir yapısını oluştur ve derlenen dosyaları kopyala
+          mkdir -p AppDir/usr/bin
+          cp -r build/linux/* AppDir/usr/bin/
+
+          # AppRun başlatıcı dosyasını oluştur
+          cat << 'EOF' > AppDir/AppRun
+          #!/bin/sh
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          exec "$HERE/usr/bin/Pear-stek-Kutusu" "$@"
+          EOF
+          chmod +x AppDir/AppRun
+
+          # Desktop entegrasyon dosyası
+          cat << 'EOF' > AppDir/pear.desktop
+          [Desktop Entry]
+          Name=Pear-stek-Kutusu
+          Exec=Pear-stek-Kutusu
+          Icon=pear
+          Type=Application
+          Categories=Utility;
+          EOF
+
+          # Geçici ikon oluştur
+          convert -size 64x64 xc:green AppDir/pear.png
+
+          # AppImage dosyasını paketle
+          ARCH=x86_64 ./squashfs-root/AppRun AppDir Pear-stek-Kutusu.AppImage
+
+      - name: AppImage Dosyasını İndirilebilir Yap
         uses: actions/upload-artifact@v4
         with:
-          name: Pardus-Linux-App
-          path: build/linux/
+          name: Pear-stek-Kutusu-AppImage
+          path: Pear-stek-Kutusu.AppImage
