@@ -18,6 +18,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Linux Sistem Bağımlılıklarını Yükle
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
       - name: Flet Kütüphanesini Yükle
         run: |
           python -m pip install --upgrade pip
